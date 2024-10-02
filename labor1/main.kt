@@ -2,14 +2,14 @@ package labor1
 import java.util.*
 import kotlin.random.Random
 //1
-// fun main() {
+// fun labor2.main() {
 // 	var sum = 2 + 3
 //     print("sum = $sum\n")
 //     print("sum_2 = $(2 + 3)")
 // }
 
 //2
-// fun main(){
+// fun labor2.main(){
 //     val daysOfWeek = listOf("monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday")
 //     for(day: String in daysOfWeek){
 //         println(day)
@@ -39,7 +39,7 @@ import kotlin.random.Random
 //     }
 // }
 
-// fun main() {
+// fun labor2.main() {
 //     val startRange = 10
 //     val endRange = 50
 //     printPrimesInRange(startRange, endRange)
@@ -56,7 +56,7 @@ import kotlin.random.Random
 // fun messageCoding(msg: String, func:(String) -> String):String{
 // 	return func(msg)
 // }
-// fun main(){
+// fun labor2.main(){
 //     val message = "Ez egy uzenet!"
 //     val encodedmessage = messageCoding(message, ::encodeString)
 //     println(encodedmessage)
@@ -66,13 +66,13 @@ import kotlin.random.Random
 
 //5
 // fun printEvenNumbers(numbers: IntArray)=numbers.filter{(it%2==0)}.forEach{ println(it)}
-// fun main(){
+// fun labor2.main(){
 //     val numbers = intArrayOf(1,2,3,4,5,6,7,8,9,10)
 // 	printEvenNumbers(numbers)
 // }
 
 //6
-// fun main() {
+// fun labor2.main() {
 //     val numbers = listOf(1, 2, 3, 4, 5)
 //     val doubledNumbers = numbers.map { it * 2 }
 //     println("Doubled Numbers: $doubledNumbers")
@@ -97,7 +97,7 @@ import kotlin.random.Random
 
 
 //7
-// fun main() {
+// fun labor2.main() {
 //     val daysOfWeek = listOf("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
 
 //     val mutableDaysOfWeek = daysOfWeek.toMutableList()
