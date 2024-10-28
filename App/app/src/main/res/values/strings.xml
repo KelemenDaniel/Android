@@ -1,3 +1,4 @@
 <resources>
-    <string name="app_name">App</string>
+    <string name="app_name">RecipeApp</string>
+    <string name="app_welcome_text">RecipeHub: Your go-to hub for discovering and sharing\n delicious recipes, all in one place!</string>
 </resources>
