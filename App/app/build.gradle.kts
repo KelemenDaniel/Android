@@ -54,4 +54,5 @@ dependencies {
     implementation("androidx.navigation:navigation-ui:$nav_version")
     implementation("androidx.navigation:navigation-dynamic-features-fragment:$nav_version")
     androidTestImplementation("androidx.navigation:navigation-testing:$nav_version")
+    implementation ("com.google.android.material:material:1.11.0-alpha01")
 }
