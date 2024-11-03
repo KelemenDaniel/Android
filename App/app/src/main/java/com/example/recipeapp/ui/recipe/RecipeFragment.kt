@@ -5,6 +5,8 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.navigation.fragment.findNavController
 import com.example.recipeapp.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -35,26 +37,15 @@ class RecipeFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_recipe, container, false)
-    }
+        val view = inflater.inflate(R.layout.fragment_recipe, container, false)
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment RecipeFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            RecipeFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+        // Find the button and set a click listener
+        val navigateToProfileButton = view.findViewById<Button>(R.id.button)
+        navigateToProfileButton.setOnClickListener {
+            // Use findNavController to navigate to the ProfileFragment
+            findNavController().navigate(R.id.recipeDetailFragment)
+        }
+
+        return view
     }
 }
