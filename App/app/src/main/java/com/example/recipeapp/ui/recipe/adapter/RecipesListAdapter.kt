@@ -7,10 +7,11 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.recipeapp.R
 import com.example.recipeapp.repository.recipe.model.RecipeModel
 
-class RecipesListAdapter(private val dataSet: List<RecipeModel>) :
+class RecipesListAdapter(private val dataSet: List<RecipeModel>, private val context: Context, ) :
     RecyclerView.Adapter<RecipesListAdapter.RecipeViewHolder>() {
 
     class RecipeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -22,19 +23,17 @@ class RecipesListAdapter(private val dataSet: List<RecipeModel>) :
             description = view.findViewById(R.id.description)
             title = view.findViewById(R.id.title)
             image = view.findViewById(R.id.recipeImage)
-
         }
     }
 
-    // Create new views (invoked by the layout manager)
-
-
-    // Replace the contents of a view (invoked by the layout manager)
     override fun onBindViewHolder(viewHolder: RecipeViewHolder, position: Int) {
-
         viewHolder.title.text = dataSet[position].name
         viewHolder.description.text = dataSet[position].description
-
+        Glide.with(context)
+            .load(dataSet[position].thumbnailUrl)
+            .placeholder(R.drawable.ic_launcher_background)
+            .fallback(R.drawable.ic_launcher_background)
+            .into(viewHolder.image)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeViewHolder {
@@ -44,7 +43,6 @@ class RecipesListAdapter(private val dataSet: List<RecipeModel>) :
         return RecipeViewHolder(view)
     }
 
-    // Return the size of your dataset (invoked by the layout manager)
     override fun getItemCount() = dataSet.size
 
 }

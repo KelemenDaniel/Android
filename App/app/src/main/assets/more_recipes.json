@@ -40,5 +40,19 @@
         "numServings": 3,
         "components": [],
         "instructions": []
+    },
+    {
+        "recipeID": 4,
+        "name": "Vegan Lentil Soup",
+        "description": "A hearty vegan lentil soup.",
+        "thumbnailUrl": "https://www.allrecipes.com/thmb/UeFtapHyGFBo4Lx-72GxgjrOGnk=/1500x0/filters:no_upscale():max_bytes(150000):strip_icc()/13978-lentil-soup-DDMFS-4x3-edfa47fc6b234e6b8add24d44c036d43.jpg",
+        "keywords": "soup, lentil, vegan",
+        "isPublic": true,
+        "userEmail": "Unknown",
+        "originalVideoUrl": "https://www.youtube.com/watch?v=KSyi9U8Zwcc&ab_channel=MarthaStewart",
+        "country": "UK",
+        "numServings": 6,
+        "components": [],
+        "instructions": []
     }
 ]

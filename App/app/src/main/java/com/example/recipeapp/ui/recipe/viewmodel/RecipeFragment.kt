@@ -50,7 +50,7 @@ class RecipeFragment : Fragment() {
                 Log.d("RecipeData", recipe.toString())
             }
 
-            recyclerView.adapter = RecipesListAdapter(recipes)
+            recyclerView.adapter = RecipesListAdapter(recipes, requireContext())
         }
 
         viewModel.loadInstructionData(this.requireContext())

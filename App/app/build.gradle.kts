@@ -58,5 +58,6 @@ dependencies {
     androidTestImplementation("androidx.navigation:navigation-testing:$nav_version")
     implementation ("com.google.android.material:material:1.11.0-alpha01")
     implementation("com.google.code.gson:gson:2.7")
-
+    implementation ("com.github.bumptech.glide:glide:4.16.0")
+    annotationProcessor ("com.github.bumptech.glide:compiler:4.12.0")
 }
