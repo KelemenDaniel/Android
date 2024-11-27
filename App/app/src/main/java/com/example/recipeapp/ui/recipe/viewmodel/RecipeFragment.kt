@@ -5,16 +5,16 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.example.recipeapp.R
 import com.example.recipeapp.databinding.FragmentRecipeBinding
 import com.example.recipeapp.repository.recipe.ViewModel.RecipeListViewModel
+import com.example.recipeapp.repository.recipe.model.RecipeModel
 import com.example.recipeapp.ui.recipe.adapter.RecipesListAdapter
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 /**
  * A simple [Fragment] subclass.
@@ -28,34 +28,45 @@ class RecipeFragment : Fragment() {
 
     }
 
+    private fun navigateToRecipeDetail(recipe: RecipeModel) {
+        findNavController().navigate(R.id.action_recipeFragment_to_recipeDetailFragment2)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        val view = inflater.inflate(R.layout.fragment_recipe, container, false)
-
-        val viewModel =
-            ViewModelProvider(this).get(RecipeListViewModel::class.java)
-
-        viewModel.loadInstructionData(requireContext())
-
+        // Use binding to inflate the layout
         val binding = FragmentRecipeBinding.inflate(inflater, container, false)
 
+        // ViewModel setup
+        val viewModel = ViewModelProvider(this).get(RecipeListViewModel::class.java)
+        viewModel.loadInstructionData(requireContext())
+
+        // RecyclerView setup
         val recyclerView = binding.recipeRecyclerView
-        recyclerView.layoutManager = LinearLayoutManager(this.requireContext())
+        recyclerView.layoutManager = LinearLayoutManager(requireContext())
 
         viewModel.recipeList.observe(viewLifecycleOwner) { recipes ->
             for (recipe in recipes) {
                 Log.d("RecipeData", recipe.toString())
             }
 
-            recyclerView.adapter = RecipesListAdapter(recipes, requireContext())
+            recyclerView.adapter = RecipesListAdapter(
+                recipes,
+                requireContext(),
+                onItemClick = { recipe: RecipeModel -> navigateToRecipeDetail(recipe) }
+            )
         }
 
-        viewModel.loadInstructionData(this.requireContext())
+        // FAB click listener
+        binding.fab.setOnClickListener {
+            Log.d("FloatingActionButton", "Clicked")
+            findNavController().navigate(R.id.action_recipeFragment_to_newRecipeFragment2)
+        }
 
         return binding.root
     }
+
 
 }

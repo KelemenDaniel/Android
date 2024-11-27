@@ -32,6 +32,33 @@ class RecipeRepository {
     fun getAll(context: Context): List<RecipeModel> {
         return readAll(context, "more_recipes.json").toRecipeModelList()
     }
+
+    fun getDetail(context: Context): RecipeDetailModel {
+        return readDetail(context, "recipe_details.json").toModel()
+
+    }
+
+    fun readDetail(context : Context, fileName : String): RecipeDetailDTO {
+        val gson = Gson()
+        lateinit var recipeList: RecipeDetailDTO
+        val assetManager = context.assets
+        try {
+            val inputStream = assetManager.open(fileName)
+            val size = inputStream.available()
+            val buffer = ByteArray(size)
+            inputStream.read(buffer)
+            inputStream.close()
+            val jsonString = String(buffer, Charsets.UTF_8)
+            val type = object : TypeToken<RecipeDetailDTO>() {}.type
+            gson.fromJson<RecipeDetailDTO>(jsonString, type)
+            recipeList = gson.fromJson(jsonString, type)
+            Log.i("GSON", recipeList.toString())
+        } catch (e: JSONException) {
+            Log.d("GSON", e.message.toString())
+        }
+        return recipeList
+    }
+
     fun readAll(context : Context, fileName : String): List<RecipeDTO> {
         val gson = Gson()
         var recipeList = listOf<RecipeDTO>()

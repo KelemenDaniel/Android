@@ -32,6 +32,9 @@
         <action
             android:id="@+id/action_recipeFragment_to_recipeDetailFragment2"
             app:destination="@id/recipeDetailFragment" />
+        <action
+            android:id="@+id/action_recipeFragment_to_newRecipeFragment2"
+            app:destination="@id/newRecipeFragment" />
     </fragment>
 
     <fragment
@@ -39,4 +42,9 @@
         android:name="com.example.recipeapp.ui.recipe.viewmodel.RecipeDetailFragment"
         android:label="fragment_recipe_detail"
         tools:layout="@layout/fragment_recipe_detail" />
+    <fragment
+        android:id="@+id/newRecipeFragment"
+        android:name="com.example.recipeapp.ui.recipe.viewmodel.NewRecipeFragment"
+        android:label="fragment_new_recipe"
+        tools:layout="@layout/fragment_new_recipe" />
 </navigation>

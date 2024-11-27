@@ -9,20 +9,25 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.recipeapp.R
+import com.example.recipeapp.databinding.RecipeRowItemBinding
 import com.example.recipeapp.repository.recipe.model.RecipeModel
 
-class RecipesListAdapter(private val dataSet: List<RecipeModel>, private val context: Context, ) :
-    RecyclerView.Adapter<RecipesListAdapter.RecipeViewHolder>() {
+class RecipesListAdapter(
+    private val dataSet: List<RecipeModel>,
+    private val context: Context,
+    private val onItemClick: (RecipeModel) -> Unit
+    ) : RecyclerView.Adapter<RecipesListAdapter.RecipeViewHolder>() {
 
     class RecipeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val description: TextView
         val title: TextView
         val image: ImageView
-
+        val binding: RecipeRowItemBinding
         init {
             description = view.findViewById(R.id.description)
             title = view.findViewById(R.id.title)
             image = view.findViewById(R.id.recipeImage)
+            binding = RecipeRowItemBinding.bind(view)
         }
     }
 
@@ -34,6 +39,9 @@ class RecipesListAdapter(private val dataSet: List<RecipeModel>, private val con
             .placeholder(R.drawable.ic_launcher_background)
             .fallback(R.drawable.ic_launcher_background)
             .into(viewHolder.image)
+        viewHolder.binding.root.setOnClickListener {
+            onItemClick(this.dataSet[position])
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeViewHolder {
