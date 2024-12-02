@@ -7,12 +7,14 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.recipeapp.repository.recipe.RecipeRepository
 import com.example.recipeapp.repository.recipe.model.RecipeDetailModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class RecipeDetailViewModel: ViewModel() {
+@HiltViewModel
+class RecipeDetailViewModel @Inject constructor(private val recipeRepository: RecipeRepository) : ViewModel() {
     private val _recipeList = MutableLiveData<RecipeDetailModel>()
     val recipeList: LiveData<RecipeDetailModel> get() = _recipeList
-    private val recipeRepository = RecipeRepository()
 
 
     fun loadInstructionData(context: Context) {

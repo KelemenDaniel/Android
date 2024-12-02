@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -15,14 +16,17 @@ import com.example.recipeapp.repository.recipe.ViewModel.RecipeListViewModel
 import com.example.recipeapp.repository.recipe.model.RecipeModel
 import com.example.recipeapp.ui.recipe.adapter.RecipesListAdapter
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * A simple [Fragment] subclass.
  * Use the [RecipeFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class RecipeFragment : Fragment() {
 
+@AndroidEntryPoint
+class RecipeFragment : Fragment() {
+    private val viewModel: RecipeListViewModel by viewModels()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -40,7 +44,7 @@ class RecipeFragment : Fragment() {
         val binding = FragmentRecipeBinding.inflate(inflater, container, false)
 
         // ViewModel setup
-        val viewModel = ViewModelProvider(this).get(RecipeListViewModel::class.java)
+
         viewModel.loadInstructionData(requireContext())
 
         // RecyclerView setup

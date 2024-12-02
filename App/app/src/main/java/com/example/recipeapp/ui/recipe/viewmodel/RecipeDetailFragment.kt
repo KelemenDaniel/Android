@@ -10,6 +10,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.net.toUri
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
@@ -24,6 +25,7 @@ import com.example.recipeapp.repository.recipe.ViewModel.RecipeListViewModel
 import com.example.recipeapp.repository.recipe.model.InstructionModel
 import com.example.recipeapp.repository.recipe.model.RecipeModel
 import com.example.recipeapp.ui.recipe.adapter.RecipesListAdapter
+import dagger.hilt.android.AndroidEntryPoint
 
 
 /**
@@ -31,11 +33,14 @@ import com.example.recipeapp.ui.recipe.adapter.RecipesListAdapter
  * Use the [RecipeDetailFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
+
+@AndroidEntryPoint
 class RecipeDetailFragment : Fragment() {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
     private lateinit var binding: FragmentRecipeDetailBinding
+    private val viewModel: RecipeDetailViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,9 +57,6 @@ class RecipeDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        val viewModel =
-            ViewModelProvider(this).get(RecipeDetailViewModel::class.java)
 
         viewModel.loadInstructionData(requireContext())
         binding = FragmentRecipeDetailBinding.inflate(inflater, container, false)

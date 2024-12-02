@@ -22,10 +22,11 @@ import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.json.JSONArray
 import org.json.JSONException
+import org.json.JSONObject
+import javax.inject.Inject
 
 
-
-class RecipeRepository {
+class RecipeRepository @Inject constructor(private val recipeDao: RecipeDao) {
     lateinit var recipeList: MutableList<RecipeModel>
     lateinit var recipeDetailModel: RecipeDetailModel
 
@@ -186,5 +187,15 @@ class RecipeRepository {
         return this.map { it.toModel() }
     }
 
-
+    suspend fun insertRecipe(recipe: RecipeEntity) {
+        recipeDao.insertRecipe(recipe)
+    }
+    suspend fun getAllRecipes(): List<RecipeModel> {
+        return recipeDao.getAllRecipes().map {
+            val jsonObject = JSONObject(it.json)
+            val gson = Gson()
+            jsonObject.apply { put("id", it.internalId) }
+            gson.fromJson(jsonObject.toString(), RecipeDTO::class.java).toModel()
+        }
+    }
 }
