@@ -11,4 +11,5 @@ data class RecipeModel(
     val numServings: Long,
     val components: List<ComponentModel>,
     val instructions: List<InstructionModel>,
+    var recipeID: Long
 )

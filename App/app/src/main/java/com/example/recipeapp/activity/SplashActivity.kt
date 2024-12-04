@@ -12,7 +12,6 @@ import androidx.core.view.WindowInsetsCompat
 import com.example.recipeapp.R
 
 class SplashActivity : AppCompatActivity() {
-    private lateinit var textmessage: String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()

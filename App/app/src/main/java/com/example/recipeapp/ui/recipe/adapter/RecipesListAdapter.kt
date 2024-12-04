@@ -1,5 +1,6 @@
 package com.example.recipeapp.ui.recipe.adapter
 
+import android.app.AlertDialog
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
@@ -13,9 +14,10 @@ import com.example.recipeapp.databinding.RecipeRowItemBinding
 import com.example.recipeapp.repository.recipe.model.RecipeModel
 
 class RecipesListAdapter(
-    private val dataSet: List<RecipeModel>,
+    private val dataSet: MutableList<RecipeModel>,
     private val context: Context,
-    private val onItemClick: (RecipeModel) -> Unit
+    private val onItemClick: (RecipeModel) -> Unit,
+    private val onItemDelete: (RecipeModel) -> Boolean
     ) : RecyclerView.Adapter<RecipesListAdapter.RecipeViewHolder>() {
 
     class RecipeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -42,6 +44,13 @@ class RecipesListAdapter(
         viewHolder.binding.root.setOnClickListener {
             onItemClick(this.dataSet[position])
         }
+        viewHolder.binding.root.setOnLongClickListener{
+            showDeleteConfirmationDialog(
+                context = context,
+                position = position
+            )
+            true
+        }
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecipeViewHolder {
@@ -52,5 +61,18 @@ class RecipesListAdapter(
     }
 
     override fun getItemCount() = dataSet.size
+
+    private fun showDeleteConfirmationDialog(context: Context, position: Int) {
+        AlertDialog.Builder(context)
+            .setTitle("Confirm Deletion")
+            .setMessage("Are you sure you want to delete this item?")
+            .setPositiveButton("Yes") { _, _ ->
+                onItemDelete(dataSet[position])
+                dataSet.removeAt(position)
+                notifyItemRemoved(position)
+            }
+            .setNegativeButton("No", null)
+            .show()
+    }
 
 }

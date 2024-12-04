@@ -21,6 +21,14 @@ import com.example.recipeapp.databinding.FragmentRecipeBinding
 import com.example.recipeapp.repository.recipe.RecipeEntity
 import com.example.recipeapp.repository.recipe.RecipeRepository
 import com.example.recipeapp.repository.recipe.ViewModel.ProfileViewModel
+import com.example.recipeapp.repository.recipe.dto.InstructionDTO
+import com.example.recipeapp.repository.recipe.model.ComponentModel
+import com.example.recipeapp.repository.recipe.model.IngredientModel
+import com.example.recipeapp.repository.recipe.model.InstructionModel
+import com.example.recipeapp.repository.recipe.model.MeasurementModel
+import com.example.recipeapp.repository.recipe.model.RecipeModel
+import com.example.recipeapp.repository.recipe.model.UnitModel
+import com.google.gson.Gson
 import dagger.hilt.android.AndroidEntryPoint
 import org.json.JSONArray
 import org.json.JSONObject
@@ -62,7 +70,7 @@ class NewRecipeFragment : Fragment() {
             button.setOnClickListener {
                 val jsonString = saveRecipe()
                 viewModel.insertRecipe(RecipeEntity(json = jsonString))
-                Log.d("RecipeData", jsonString)
+                Log.d("NewRecipeJson", jsonString)
                 Toast.makeText(requireContext(), "Recipe saved successfully!", Toast.LENGTH_SHORT).show()
 
                 // Navigate back to the Recipe Fragment
@@ -122,24 +130,62 @@ class NewRecipeFragment : Fragment() {
         val recipeDescription = view?.findViewById<EditText>(R.id.editTextText6)?.text.toString()
         val recipePictureUrl = view?.findViewById<EditText>(R.id.editTextText7)?.text.toString()
         val recipeVideoUrl = view?.findViewById<EditText>(R.id.editTextText8)?.text.toString()
-        val recipeIngredients = ingredientsContainer.children.map { it as EditText }
-            .map { it.text.toString() }
+        val recipeComponents = ingredientsContainer.children.map { it as EditText }
+            .mapIndexed { index, it->
+                ComponentModel(
+                    rawText = it.text.toString(),
+                    extraComment = "",
+                    ingredient = IngredientModel(
+                        name = it.text.toString()
+                    ),
+                    measurement = MeasurementModel(
+                        quantity = "",
+                        unit = UnitModel(
+                            name = "",
+                            displaySingular = "",
+                            displayPlural = "",
+                            abbreviation = ""
+                        )
+                    ),
+                    position = index.toLong()
+                )
+
+            }
             .toList()
 
         val recipeInstructions = instructionsContainer.children.map { it as EditText }
-            .map { it.text.toString() }
+            .mapIndexed { index, it->
+                InstructionModel(
+                    displayText = it.text.toString(),
+                    position = index.toLong()
+                )
+            }
             .toList()
 
-        val recipeJson = JSONObject().apply {
-            put("name", recipeName)
-            put("description", recipeDescription)
-            put("pictureUrl", recipePictureUrl)
-            put("videoUrl", recipeVideoUrl)
-            put("ingredients", JSONArray(recipeIngredients))
-            put("instructions", JSONArray(recipeInstructions))
-        }
+        val recipe = RecipeModel(
+            name = recipeName,
+            description = recipeDescription,
+            thumbnailUrl = recipePictureUrl,
+            keywords = "",
+            userEmail = "",
+            originalVideoUrl = recipeVideoUrl,
+            country = "",
+            numServings = 4,
+            components = recipeComponents,
+            instructions = recipeInstructions,
+            recipeID = 0L
+        )
 
-        val jsonString = recipeJson.toString()
+//        val recipeJson = JSONObject().apply {
+//            put("name", recipeName)
+//            put("description", recipeDescription)
+//            put("pictureUrl", recipePictureUrl)
+//            put("videoUrl", recipeVideoUrl)
+//            put("ingredients", JSONArray(recipeIngredients))
+//            put("instructions", JSONArray(recipeInstructions))
+//        }
+
+        val jsonString = Gson().toJson(recipe).toString()
         return jsonString
     }
 

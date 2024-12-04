@@ -14,6 +14,8 @@ import com.example.recipeapp.databinding.FragmentProfileBinding
 import com.example.recipeapp.databinding.FragmentRecipeBinding
 import com.example.recipeapp.repository.recipe.ViewModel.ProfileViewModel
 import com.example.recipeapp.repository.recipe.ViewModel.RecipeListViewModel
+import com.example.recipeapp.repository.recipe.model.RecipeModel
+import com.example.recipeapp.ui.recipe.adapter.RecipesListAdapter
 import dagger.hilt.android.AndroidEntryPoint
 
 // TODO: Rename parameter arguments, choose names that match
@@ -44,7 +46,19 @@ class ProfileFragment : Fragment() {
         viewModel.loadInstructionData()
         val recyclerView = binding.profileRecyclerView
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+        viewModel.recipeList.observe(viewLifecycleOwner){
+            recipeList ->
+            recyclerView.adapter = RecipesListAdapter(
+                dataSet = recipeList.toMutableList(),
+                context = requireContext(),
+                onItemClick = {},
+                onItemDelete = {recipe:RecipeModel ->
+                    viewModel.deleteRecipe(recipe.recipeID)
+                }
+            )
+        }
+
+        return binding.root
     }
 
 

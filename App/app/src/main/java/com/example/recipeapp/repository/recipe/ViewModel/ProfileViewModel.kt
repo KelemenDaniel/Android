@@ -29,4 +29,9 @@ class ProfileViewModel @Inject constructor(private val repository: RecipeReposit
             _recipeList.postValue(recipeList)
         }
     }
+
+    fun deleteRecipe(recipeID: Long):Boolean {
+        viewModelScope.launch { repository.deleteRecipe(recipeID) }
+        return true
+    }
 }

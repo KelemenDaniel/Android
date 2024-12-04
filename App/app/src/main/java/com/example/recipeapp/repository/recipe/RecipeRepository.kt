@@ -39,7 +39,7 @@ class RecipeRepository @Inject constructor(private val recipeDao: RecipeDao) {
 
     }
 
-    fun readDetail(context : Context, fileName : String): RecipeDetailDTO {
+    fun readDetail(context: Context, fileName: String): RecipeDetailDTO {
         val gson = Gson()
         lateinit var recipeList: RecipeDetailDTO
         val assetManager = context.assets
@@ -60,7 +60,7 @@ class RecipeRepository @Inject constructor(private val recipeDao: RecipeDao) {
         return recipeList
     }
 
-    fun readAll(context : Context, fileName : String): List<RecipeDTO> {
+    fun readAll(context: Context, fileName: String): List<RecipeDTO> {
         val gson = Gson()
         var recipeList = listOf<RecipeDTO>()
         val assetManager = context.assets
@@ -94,9 +94,9 @@ class RecipeRepository @Inject constructor(private val recipeDao: RecipeDao) {
             numServings = this.numServings,
             components = this.components.toComponentModelList(),
             instructions = this.instructions.toInstructionModelList(),
+            recipeID = recipeId
         )
     }
-
 
 
     private fun RecipeDetailDTO.toModel(): RecipeDetailModel {
@@ -127,13 +127,11 @@ class RecipeRepository @Inject constructor(private val recipeDao: RecipeDao) {
     }
 
 
-
     private fun MeasurementDTO.toModel(): MeasurementModel {
         return MeasurementModel(
             quantity = this.quantity, unit = this.unit.toModel()
         )
     }
-
 
 
     private fun InstructionDTO.toModel(): InstructionModel {
@@ -190,12 +188,19 @@ class RecipeRepository @Inject constructor(private val recipeDao: RecipeDao) {
     suspend fun insertRecipe(recipe: RecipeEntity) {
         recipeDao.insertRecipe(recipe)
     }
+
     suspend fun getAllRecipes(): List<RecipeModel> {
         return recipeDao.getAllRecipes().map {
             val jsonObject = JSONObject(it.json)
             val gson = Gson()
             jsonObject.apply { put("id", it.internalId) }
-            gson.fromJson(jsonObject.toString(), RecipeDTO::class.java).toModel()
+            val recipe = gson.fromJson(jsonObject.toString(), RecipeDTO::class.java).toModel()
+            recipe.recipeID = it.internalId
+            recipe
         }
+    }
+
+    suspend fun deleteRecipe(recipeID: Long) {
+        recipeDao.deleteRecipe(recipeDao.getRecipeById(recipeID)!!)
     }
 }

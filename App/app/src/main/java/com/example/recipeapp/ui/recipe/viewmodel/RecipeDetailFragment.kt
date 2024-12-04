@@ -93,7 +93,7 @@ class RecipeDetailFragment : Fragment() {
 
     override fun onPause() {
         super.onPause()
-        binding.videoView.player?.pause()
+        binding.videoView.player?.stop()
     }
 
 }

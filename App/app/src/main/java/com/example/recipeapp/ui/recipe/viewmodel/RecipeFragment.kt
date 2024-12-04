@@ -57,9 +57,10 @@ class RecipeFragment : Fragment() {
             }
 
             recyclerView.adapter = RecipesListAdapter(
-                recipes,
+                recipes.toMutableList(),
                 requireContext(),
-                onItemClick = { recipe: RecipeModel -> navigateToRecipeDetail(recipe) }
+                onItemClick = { recipe: RecipeModel -> navigateToRecipeDetail(recipe) },
+                onItemDelete = {recipe -> true}
             )
         }
 
