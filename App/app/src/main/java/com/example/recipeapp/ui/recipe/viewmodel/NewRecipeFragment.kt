@@ -68,9 +68,9 @@ class NewRecipeFragment : Fragment() {
         val button = view?.findViewById<Button>(R.id.button3)
         if (button != null) {
             button.setOnClickListener {
-                val jsonString = saveRecipe()
-                viewModel.insertRecipe(RecipeEntity(json = jsonString))
-                Log.d("NewRecipeJson", jsonString)
+                val recipe = saveRecipe()
+                viewModel.insertRecipe(recipe)
+                Log.d("NewRecipeJson", recipe.toString())
                 Toast.makeText(requireContext(), "Recipe saved successfully!", Toast.LENGTH_SHORT).show()
 
                 // Navigate back to the Recipe Fragment
@@ -125,7 +125,7 @@ class NewRecipeFragment : Fragment() {
     }
 
 
-    private fun saveRecipe(): String {
+    private fun saveRecipe(): RecipeModel {
         val recipeName = view?.findViewById<EditText>(R.id.editTextText3)?.text.toString()
         val recipeDescription = view?.findViewById<EditText>(R.id.editTextText6)?.text.toString()
         val recipePictureUrl = view?.findViewById<EditText>(R.id.editTextText7)?.text.toString()
@@ -157,7 +157,7 @@ class NewRecipeFragment : Fragment() {
             .mapIndexed { index, it->
                 InstructionModel(
                     displayText = it.text.toString(),
-                    position = index.toLong()
+                    position = index.toLong() + 1
                 )
             }
             .toList()
@@ -176,17 +176,7 @@ class NewRecipeFragment : Fragment() {
             recipeID = 0L
         )
 
-//        val recipeJson = JSONObject().apply {
-//            put("name", recipeName)
-//            put("description", recipeDescription)
-//            put("pictureUrl", recipePictureUrl)
-//            put("videoUrl", recipeVideoUrl)
-//            put("ingredients", JSONArray(recipeIngredients))
-//            put("instructions", JSONArray(recipeInstructions))
-//        }
-
-        val jsonString = Gson().toJson(recipe).toString()
-        return jsonString
+        return recipe
     }
 
 }

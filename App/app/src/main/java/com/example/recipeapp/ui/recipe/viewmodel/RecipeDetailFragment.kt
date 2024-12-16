@@ -57,8 +57,7 @@ class RecipeDetailFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
-        viewModel.loadInstructionData(requireContext())
+        val recipeId = arguments?.getLong("id")?: 0
         binding = FragmentRecipeDetailBinding.inflate(inflater, container, false)
 
 
@@ -66,27 +65,27 @@ class RecipeDetailFragment : Fragment() {
             val player = ExoPlayer.Builder(requireContext()).build()
             val videoView = view?.findViewById<PlayerView>(R.id.videoView)
             videoView?.player = player
-            val mediaItem = MediaItem.fromUri(recipes.originalVideoUrl.toUri())
-            player.setMediaItem(mediaItem)
+            val mediaItem = recipes?.originalVideoUrl?.let { MediaItem.fromUri(it.toUri()) }
+            mediaItem?.let { player.setMediaItem(it) }
             player.prepare()
             val image = view?.findViewById<ImageView>(R.id.imageView3)
             if (image != null) {
                 Glide.with(requireContext())
-                    .load(recipes.thumbnailUrl)
+                    .load(recipes?.thumbnailUrl)
                     .placeholder(R.drawable.ic_launcher_background)
                     .fallback(R.drawable.ic_launcher_background)
                     .into(image)
             }
             val description = view?.findViewById<TextView>(R.id.textView5)
             val title = view?.findViewById<TextView>(R.id.textView4)
-            description?.text = recipes.description
-            title?.text = recipes.name
+            description?.text = recipes?.description
+            title?.text = recipes?.name
             val instructions = view?.findViewById<TextView>(R.id.textView7)
-            val formattedInstructions = recipes.instructions.toFormattedString()
+            val formattedInstructions = recipes?.instructions?.toFormattedString()
             instructions?.text = formattedInstructions
         }
 
-        viewModel.loadInstructionData(this.requireContext())
+        viewModel.loadInstructionData(recipeId)
 
         return binding.root
     }

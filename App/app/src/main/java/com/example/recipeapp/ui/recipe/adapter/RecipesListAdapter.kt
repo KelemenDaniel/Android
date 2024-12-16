@@ -2,6 +2,7 @@ package com.example.recipeapp.ui.recipe.adapter
 
 import android.app.AlertDialog
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,11 +15,13 @@ import com.example.recipeapp.databinding.RecipeRowItemBinding
 import com.example.recipeapp.repository.recipe.model.RecipeModel
 
 class RecipesListAdapter(
-    private val dataSet: MutableList<RecipeModel>,
+    private var dataSet: MutableList<RecipeModel>,
     private val context: Context,
     private val onItemClick: (RecipeModel) -> Unit,
-    private val onItemDelete: (RecipeModel) -> Boolean
-    ) : RecyclerView.Adapter<RecipesListAdapter.RecipeViewHolder>() {
+    private val onItemDelete: (RecipeModel) -> Boolean,
+    private val onFavouriteClick: (RecipeModel) -> Unit
+
+) : RecyclerView.Adapter<RecipesListAdapter.RecipeViewHolder>() {
 
     class RecipeViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val description: TextView
@@ -42,6 +45,7 @@ class RecipesListAdapter(
             .fallback(R.drawable.ic_launcher_background)
             .into(viewHolder.image)
         viewHolder.binding.root.setOnClickListener {
+            Log.d("position",this.dataSet[position].recipeID.toString())
             onItemClick(this.dataSet[position])
         }
         viewHolder.binding.root.setOnLongClickListener{
@@ -50,6 +54,9 @@ class RecipesListAdapter(
                 position = position
             )
             true
+        }
+        viewHolder.binding.imageButton.setOnClickListener{
+            onFavouriteClick(this.dataSet[position])
         }
     }
 
@@ -74,5 +81,8 @@ class RecipesListAdapter(
             .setNegativeButton("No", null)
             .show()
     }
-
+    fun updateRecipes(recipes: List<RecipeModel>) {
+        this.dataSet = recipes.toMutableList()
+        this.notifyDataSetChanged()
+    }
 }

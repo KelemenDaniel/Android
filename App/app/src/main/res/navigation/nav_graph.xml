@@ -22,7 +22,11 @@
         android:id="@+id/profileFragment"
         android:name="com.example.recipeapp.ui.profile.ProfileFragment"
         android:label="fragment_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_profileFragment_to_recipeDetailFragment"
+            app:destination="@id/recipeDetailFragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/recipeFragment"

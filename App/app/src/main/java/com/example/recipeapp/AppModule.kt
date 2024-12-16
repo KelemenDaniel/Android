@@ -5,10 +5,10 @@ import androidx.room.Room
 import com.example.recipeapp.repository.recipe.RecipeDao
 import com.example.recipeapp.repository.recipe.RecipeDatabase
 import com.example.recipeapp.repository.recipe.RecipeRepository
+import com.example.recipeapp.service.RecipeApiClient
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.components.ActivityComponent
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
@@ -16,12 +16,6 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-
-    @Provides
-    @Singleton
-    fun provideRecipeRepository(recipeDao: RecipeDao): RecipeRepository {
-        return RecipeRepository(recipeDao)
-    }
 
     @Provides
     @Singleton
@@ -36,5 +30,11 @@ object AppModule {
     @Provides
     fun provideRecipeDao(recipeDatabase: RecipeDatabase): RecipeDao {
         return recipeDatabase.recipeDao()
+    }
+
+    @Provides
+    @Singleton
+    fun provideRecipeApiClient(): RecipeApiClient {
+        return RecipeApiClient()
     }
 }

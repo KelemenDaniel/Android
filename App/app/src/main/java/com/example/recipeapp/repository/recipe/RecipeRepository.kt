@@ -18,15 +18,18 @@ import com.example.recipeapp.repository.recipe.model.NutritionModel
 import com.example.recipeapp.repository.recipe.model.RecipeDetailModel
 import com.example.recipeapp.repository.recipe.model.RecipeModel
 import com.example.recipeapp.repository.recipe.model.UnitModel
+import com.example.recipeapp.service.RecipeApiClient
+import com.example.recipeapp.ui.recipe.viewmodel.AlreadyFavouriteException
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
 import javax.inject.Inject
+import javax.inject.Singleton
 
-
-class RecipeRepository @Inject constructor(private val recipeDao: RecipeDao) {
+@Singleton
+class RecipeRepository @Inject constructor(private val recipeDao: RecipeDao, private val recipeApiClient: RecipeApiClient) {
     lateinit var recipeList: MutableList<RecipeModel>
     lateinit var recipeDetailModel: RecipeDetailModel
 
@@ -37,6 +40,18 @@ class RecipeRepository @Inject constructor(private val recipeDao: RecipeDao) {
     fun getDetail(context: Context): RecipeDetailModel {
         return readDetail(context, "recipe_details.json").toModel()
 
+    }
+
+    suspend fun getMyRecipesApi(): List<RecipeModel> {
+        return recipeApiClient.getMyRecipes()?.toRecipeModelList()?: emptyList()
+    }
+
+    suspend fun getAllAPi(): List<RecipeModel>{
+        return recipeApiClient.getRecipes()?.toRecipeModelList() ?: emptyList()
+    }
+
+    suspend fun getRecipeDetailFromApi(id: Long): RecipeDetailModel?{
+        return recipeApiClient.getRecipeDetail(id)?.toModel()
     }
 
     fun readDetail(context: Context, fileName: String): RecipeDetailDTO {
@@ -84,84 +99,84 @@ class RecipeRepository @Inject constructor(private val recipeDao: RecipeDao) {
 
     private fun RecipeDTO.toModel(): RecipeModel {
         return RecipeModel(
-            name = this.name,
-            description = this.description,
-            thumbnailUrl = this.thumbnailUrl,
-            keywords = this.keywords,
-            userEmail = this.userEmail,
-            originalVideoUrl = this.originalVideoUrl,
-            country = this.country,
-            numServings = this.numServings,
-            components = this.components.toComponentModelList(),
-            instructions = this.instructions.toInstructionModelList(),
-            recipeID = recipeId
+            name = this.name.toString(),
+            description = this.description.toString(),
+            thumbnailUrl = this.thumbnailUrl.toString(),
+            keywords = this.keywords.toString(),
+            userEmail = this.userEmail.toString(),
+            originalVideoUrl = this.originalVideoUrl.toString(),
+            country = this.country.toString(),
+            numServings = this.numServings?: 0,
+            components = this.components?.toComponentModelList()?: emptyList(),
+            instructions = this.instructions?.toInstructionModelList()?: emptyList(),
+            recipeID = recipeID?: 0
         )
     }
 
 
     private fun RecipeDetailDTO.toModel(): RecipeDetailModel {
         return RecipeDetailModel(
-            name = this.name,
-            description = this.description,
-            thumbnailUrl = this.thumbnailUrl,
-            keywords = this.keywords,
-            userEmail = this.userEmail,
-            originalVideoUrl = this.originalVideoUrl,
-            country = this.country,
-            numServings = this.numServings,
-            components = this.components.toComponentModelList(),
-            instructions = this.instructions.toInstructionModelList(),
-            nutrition = this.nutrition.toModel(),
+            name = this.name.toString(),
+            description = this.description.toString(),
+            thumbnailUrl = this.thumbnailUrl.toString(),
+            keywords = this.keywords.toString(),
+            userEmail = this.userEmail.toString(),
+            originalVideoUrl = this.originalVideoUrl.toString(),
+            country = this.country.toString(),
+            numServings = this.numServings?: 0,
+            components = this.components?.toComponentModelList()?: emptyList(),
+            instructions = this.instructions?.toInstructionModelList() ?: emptyList(),
+            nutrition = this.nutrition?.toModel()?: NutritionModel(0,0,0,0,0,0),
         )
     }
 
     private fun NutritionDTO.toModel(): NutritionModel {
         return NutritionModel(
-            calories = this.calories,
-            protein = this.protein,
-            fat = this.fat,
-            carbohydrates = this.carbohydrates,
-            sugar = this.sugar,
-            fiber = this.fiber
+            calories = this.calories?: 0,
+            protein = this.protein?: 0,
+            fat = this.fat?: 0,
+            carbohydrates = this.carbohydrates?: 0,
+            sugar = this.sugar?: 0,
+            fiber = this.fiber?: 0
         )
     }
 
 
     private fun MeasurementDTO.toModel(): MeasurementModel {
         return MeasurementModel(
-            quantity = this.quantity, unit = this.unit.toModel()
+            quantity = this.quantity.toString(), unit = this.unit?.toModel()?: UnitModel("","","","")
         )
     }
 
 
     private fun InstructionDTO.toModel(): InstructionModel {
         return InstructionModel(
-            position = this.position, displayText = this.displayText
+            position = this.position?: 0, displayText = this.displayText.toString()
         )
     }
 
     private fun IngredientDTO.toModel(): IngredientModel {
         return IngredientModel(
-            name = this.name
+            name = this.name.toString()
         )
     }
 
     private fun ComponentDTO.toModel(): ComponentModel {
         return ComponentModel(
-            rawText = this.rawText,
-            extraComment = this.extraComment,
-            ingredient = this.ingredient.toModel(),
-            measurement = this.measurement.toModel(),
-            position = this.position
+            rawText = this.rawText.toString(),
+            extraComment = this.extraComment.toString(),
+            ingredient = this.ingredient?.toModel()?: IngredientModel(""),
+            measurement = this.measurement?.toModel()?: MeasurementModel("", UnitModel("","","","")),
+            position = this.position?: 0
         )
     }
 
     private fun UnitDTO.toModel(): UnitModel {
         return UnitModel(
-            name = this.name,
-            displaySingular = this.displaySingular,
-            displayPlural = this.displayPlural,
-            abbreviation = this.abbreviation
+            name = this.name.toString(),
+            displaySingular = this.displaySingular.toString(),
+            displayPlural = this.displayPlural.toString(),
+            abbreviation = this.abbreviation.toString()
         )
     }
 
@@ -185,8 +200,16 @@ class RecipeRepository @Inject constructor(private val recipeDao: RecipeDao) {
         return this.map { it.toModel() }
     }
 
-    suspend fun insertRecipe(recipe: RecipeEntity) {
-        recipeDao.insertRecipe(recipe)
+    suspend fun insertRecipe(recipe: RecipeEntity): Boolean {
+        val recipe1: RecipeEntity? = this.recipeDao.getRecipeById(recipe.internalId)
+        Log.d("Reppo", recipe1.toString())
+        if (recipe1 == null)
+        {
+            recipeDao.insertRecipe(recipe)
+            return true
+        }
+        else
+            return false
     }
 
     suspend fun getAllRecipes(): List<RecipeModel> {
@@ -203,4 +226,51 @@ class RecipeRepository @Inject constructor(private val recipeDao: RecipeDao) {
     suspend fun deleteRecipe(recipeID: Long) {
         recipeDao.deleteRecipe(recipeDao.getRecipeById(recipeID)!!)
     }
+
+    suspend fun insertRecipeToApi(recipe: RecipeModel) {
+        recipeApiClient.createRecipe(
+            RecipeDetailDTO(
+                recipeId = recipe.recipeID,
+                name = recipe.name,
+                description = recipe.description,
+                thumbnailUrl = recipe.thumbnailUrl,
+                keywords = recipe.keywords,
+                isPublic = true,
+                userEmail = recipe.userEmail,
+                originalVideoUrl = recipe.originalVideoUrl,
+                country = recipe.country,
+                numServings = recipe.numServings,
+                components = recipe.components.map { ComponentDTO(
+                    rawText = it.rawText,
+                    extraComment = it.extraComment,
+                    ingredient = IngredientDTO(
+                        name = it.ingredient.name
+                    ),
+                    measurement = MeasurementDTO(
+                        quantity = it.measurement.quantity,
+                        unit = UnitDTO(
+                            name = it.measurement.unit.name,
+                            displaySingular = it.measurement.unit.displaySingular,
+                            displayPlural = it.measurement.unit.displayPlural,
+                            abbreviation = it.measurement.unit.abbreviation
+                        )
+                    ),
+                    position = it.position
+                ) },
+                instructions = recipe.instructions.map{
+                    InstructionDTO(
+                        instructionId = null,
+                        displayText = it.displayText,
+                        position = it.position
+                    )
+                },
+                nutrition = NutritionDTO(0,0,0,0,0,0)
+            )
+        )
+    }
+
+    suspend fun deleteRecipeFromApi(recipeID: Long) {
+        recipeApiClient.deleteRecipe(recipeID)
+    }
+
 }
