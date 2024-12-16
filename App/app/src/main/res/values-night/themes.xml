@@ -11,6 +11,7 @@
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:windowBackground">#B0BEC5</item>
         <!-- Customize your theme here. -->
     </style>
     <style name="Theme.RecipeApp.Button" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -24,6 +25,7 @@
         <item name="colorOnSecondary">#A04C13</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor">?attr/colorPrimaryVariant</item>
+        <item name="android:windowBackground">#B0BEC5</item>
         <!-- Customize your theme here. -->
     </style>
 </resources>
